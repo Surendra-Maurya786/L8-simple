@@ -1,65 +1,186 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+The Laravel Installer
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+laravel new example-app   Create Project 
+cd example-app    Go to your project Folder
+php artisan serve    Run your project
+ Shift + Alt + Down Arrow Key to Duplicate line
+Maintenance Mode
 
-## About Laravel
+php artisan down
+php artisan up
+Particular user access maitance mode. Bypassing Maintenance Mode
+php artisan down --secret="surendra"
+http://127.0.0.1:8000/surendra
+Redirecting Maintenance Mode Requests Show Custom Page while Maintance mode
+php artisan down --render="error"
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Query Builder
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Import this controller Page
+use Illuminate\Support\Facades\DB;
+Fetch all data from database
+ function queryBuild(){
 
-## Learning Laravel
+return DB::table('members')->get();
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+    }
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Count data from table
 
-## Laravel Sponsors
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+$data =  DB::table('members')->count();
 
-### Premium Partners
+Insert data in database using query builder
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[CMS Max](https://www.cmsmax.com/)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+return DB::table('members')
+->insert(
+    [
+        'name'=>'anil',
+        'address'=>'pune'
+    ]
+);
 
-## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Update data from database
 
-## Code of Conduct
+return DB::table('members')
+->where('id',2)
+->update(
+    [
+        'name'=>'ramn',
+        'address'=>'nashik'
+    ]
+);
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+// Delete data from database
 
-## Security Vulnerabilities
+return DB::table('members')
+->where('id',2)
+->delete();
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+What is Laravel Seeder
 
-## License
+“Laravel Seeder is a way of inserting set of data to the database by running a single command. “
+php artisan make:seeder CitiesTableSeeder
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+public function run()
+{
+    DB::table('cities')->truncate();
+    DB::table('cities')->insert([
+        ['id' => 1, 'name' => 'Alabama'],
+        ['id' => 2, 'name' => 'Alaska'],
+        ['id' => 3, 'name' => 'Arizona'],
+        ['id' => 4, 'name' => 'Arkansas'],
+        ['id' => 5, 'name' => 'California'],
+   ]);
+}
+
+php artisan db:seed –class=CitiesTableSeeder
+
+Laravel Validation
+Validation is the process of checking the incoming data. By default, laravel provides the base controller class that uses the ValidatesRequests trait to validate all the incoming Http requests.
+
+
+Add this in controller page
+use Validator;
+$rule = array(
+
+            // "name"=>'required',
+            "name"=>'required|min:2|max:10',
+            "address"=>'required|min:10|max:20',
+            "contact"=>'required|min:9|max:10'
+            
+        );
+   $validator = Validator::make($reqs->all(),$rule);
+        if($validator->fails()){
+            return $validator->errors();
+        }else{
+            $test = new test;
+            $test->name = $reqs->name;
+            $test->address  = $reqs->address;
+            $test->contact = $reqs->contact;
+            $results = $test->save();          
+            if($results){
+                return ['Result'=>'Data has been saved'];    
+           }else{
+                return ['Error'=>'Invalid']; 
+               }         }
+      
+
+
+Resource
+Eloquent: API Resources
+A resource controller is used to create a controller that handles all the http requests stored by your application. The resource () is a static function like get ()
+ method that gives access to multiple routes that we can use in a controller.
+Laravel resource provide inbuilt some function for curd operation, Using resource one route we can perform curd tasks.
+Cmd
+php artisan make:controller ResourcApiController –resource
+
+controller page
+
+use App\Http\Controllers\ResourcApiController;
+Route::apiResource('resource',ResourcApiController::class);
+
+Laravel - Sending Email
+https://laravel.com/docs/8.x/mail
+php artisan make:mail SampleMail --markdown=emails.SampleMail
+SampleMail is Inside Mail folder Created
+emails is folder name 
+SampleMail  is file creating which send to email
+.env
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=surendra75maurya@gmail.com
+MAIL_PASSWORD=9702609250
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=surendra75maurya@gmail.com
+MAIL_FROM_NAME="${APP_NAME}"
+
+
+
+Test Email in browser how email is view
+Web.php 
+Import this web.php  
+use App\Mail\SampleMail;
+Route::get('/', function () {
+    return new SampleMail();
+});
+
+Mail  Controller
+Use Illuminate\Support\Facades\Mail;
+use App\Mail\SampleMail;
+
+
+
+
+
+Component 
+php artisan make:component Header
+
+Migration 
+php artisan make:migration create_register_table
+php artisan migrate:status
+php artisan migrate --force
+Rollback Migration from in you database
+
+php artisan migrate:rollback
+The migrate:reset command will roll back all of your application's migrations:
+php artisan migrate:reset
+php artisan migrate:rollback
+The migrate:refresh command will roll back all of your migrations and then execute the migrate command. This command effectively re-creates your entire database:
+php artisan migrate:refresh
+
+
+
+Password Hashing
+Add this controller page
+use Laravel\Passport\HasApiTokens;
+use Illuminate\Support\Facades\Hash;
+
+
+ $hash =  Hash::make($req->password);
+        $data->password =  $hash;
+
+
